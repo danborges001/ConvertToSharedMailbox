@@ -14,15 +14,18 @@ ForEach ($Email in $Emails) #Loops through CSV and determines size of each mailb
 	$MailboxSize=($MailboxSizeTemp -Replace '(\,|^[^\(]*\(| bytes\))','')
 	[int64]$intMailboxSize = [convert]::ToInt64($MailboxSize, 10)
 	$MaxSize = 10737418240
-	If ($intMailboxsize -lt $MaxSize) #If the mailbox is less than 10GB it will convert it to a shared mailbox and unlicense the account
-		{	
-		Set-Mailbox $Email -Type Shared -ProhibitSendReceiveQuota 10GB -ProhibitSendQuota 9.75GB -IssueWarningQuota 9.5GB
-		Set-MSOLUserLicense -UserPrincipalName $Email -RemoveLicenses pvsw:ENTERPRISEWITHSCAL
-		}		
-	Else #If the mailbox is too large, it will send an e-mail to IT customer service announcing the the mailbox is too large to convert.
+	If ((Get-Mailbox $Email).IsShared -eq $False)
 		{
-		$intMailboxSize = [math]::round($intMailBoxSize/1Gb,2)
-		Send-MailMessage -To "Desktop Support <IT.Customer.Service@actian.com>" -From "Term Script <IT.Customer.Service@actian.com>" -Subject "Mailbox too large to convert to shared mailbox" -Body "$Email is unabled to be archived because it is $intMailboxSize GB.  The largest convertable is 10GB." -SMTPserver smtp.actian.com
+		If ($intMailboxsize -lt $MaxSize) #If the mailbox is less than 10GB it will convert it to a shared mailbox and unlicense the account
+			{	
+			Set-Mailbox $Email -Type Shared -ProhibitSendReceiveQuota 10GB -ProhibitSendQuota 9.75GB -IssueWarningQuota 9.5GB
+			Set-MSOLUserLicense -UserPrincipalName $Email -RemoveLicenses pvsw:ENTERPRISEWITHSCAL
+			}
+		Else #If the mailbox is too large, it will send an e-mail to IT customer service announcing the the mailbox is too large to convert.
+			{
+			$intMailboxSize = [math]::round($intMailBoxSize/1Gb,2)
+			Send-MailMessage -To "Dan Borges<dan.borges@actian.com>" -From "IT - Customer Service<IT.Customer.Service@actian.com>" -Subject "Mailbox too large to convert to shared mailbox" -Body "$Email is unable to be archived because it is $intMailboxSize GB.  The largest convertable is 10GB." -SMTPserver smtp.actian.com
+			}
 		}
 	}
 Get-PSSession | Remove-PSSession
