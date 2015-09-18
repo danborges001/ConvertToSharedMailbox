@@ -14,7 +14,7 @@ ForEach ($Email in $Emails) #Loops through CSV and determines size of each mailb
 	$MailboxSize=($MailboxSizeTemp -Replace '(\,|^[^\(]*\(| bytes\))','')
 	[int64]$intMailboxSize = [convert]::ToInt64($MailboxSize, 10)
 	$MaxSize = 10737418240
-	If ((Get-Mailbox $Email).IsShared -eq $False)
+	If ((Get-Mailbox $Email).IsShared -eq $False) #Checks to make sure that the mailbox isn't already shared
 		{
 		If ($intMailboxsize -lt $MaxSize) #If the mailbox is less than 10GB it will convert it to a shared mailbox and unlicense the account
 			{	
