@@ -24,7 +24,7 @@ ForEach ($Email in $Emails) #Loops through CSV and determines size of each mailb
 		Else #If the mailbox is too large, it will send an e-mail to IT customer service announcing the the mailbox is too large to convert.
 			{
 			$intMailboxSize = [math]::round($intMailBoxSize/1Gb,2)
-			Send-MailMessage -To "Dan Borges<dan.borges@actian.com>" -From "IT - Customer Service<IT.Customer.Service@actian.com>" -Subject "Mailbox too large to convert to shared mailbox" -Body "$Email is unable to be archived because it is $intMailboxSize GB.  The largest convertable is 10GB." -SMTPserver smtp.actian.com
+			Send-MailMessage -To "Dan Borges<dan.borges@actian.com>" -From "IT - Customer Service<IT.Customer.Service@actian.com>" -Subject "Mailbox too large to convert to shared mailbox" -Body "$Email is unable to be archived because it is $intMailboxSize GB.  The largest convertible is 10GB." -SMTPserver smtp.actian.com
 			}
 		}
 	}
