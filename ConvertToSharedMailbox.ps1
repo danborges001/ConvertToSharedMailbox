@@ -1,6 +1,11 @@
 # This script analyses a user's mailbox and if it is below a certain threshold it will convert it to a shared mailbox and unlicense the account
 $Session = Get-PSSession
 $Emails = Get-Content C:\Users\borda01\NewTerms.csv
+$Mailto "Person's Name<Person@Company.com"
+$Mailfrom "Person's Name<Person@Company.com"
+$SubjectMessage "Subject of e-mail"
+$BodyMessage "Body of e-mail"
+$SMTPServer smtpserver.company.com
 If (-Not($Session.ComputerName -eq "outlook.office365.com" -and $Session.State -eq "Opened")) # Tests for already existing powershell session to Microsoft on-line (MSOL)
 	{
 	$UserCredential = Get-Credential
@@ -24,8 +29,8 @@ ForEach ($Email in $Emails) #Loops through CSV and determines size of each mailb
 		Else #If the mailbox is too large, it will send an e-mail to IT customer service announcing the the mailbox is too large to convert.
 			{
 			$intMailboxSize = [math]::round($intMailBoxSize/1Gb,2)
-			Send-MailMessage -To "Dan Borges<dan.borges@actian.com>" -From "IT - Customer Service<IT.Customer.Service@actian.com>" -Subject "Mailbox too large to convert to shared mailbox" -Body "$Email is unable to be archived because it is $intMailboxSize GB.  The largest convertible is 10GB." -SMTPserver smtp.actian.com
+			Send-MailMessage -To $Mailto -From $MailFrom -Subject $SubjectMessage -Body $BodyMessage -SMTPserver $SMTPServer
 			}
 		}
 	}
-Get-PSSession | Remove-PSSession
+Get-PSSession | Remove-PSSession1
