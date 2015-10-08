@@ -1,6 +1,6 @@
 # This script analyses a user's mailbox and if it is below a certain threshold it will convert it to a shared mailbox and unlicense the account
 $Session = Get-PSSession
-$Emails = Get-Content C:\Users\borda01\NewTerms.csv
+$Emails = Get-Content "Path to csv"
 $Mailto = "Person's Name<Person@Company.com"
 $Mailfrom = "Person's Name<Person@Company.com"
 $SubjectMessage = "Subject of e-mail"
