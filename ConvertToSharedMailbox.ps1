@@ -1,11 +1,12 @@
 # This script analyses a user's mailbox and if it is below a certain threshold it will convert it to a shared mailbox and unlicense the account
 $Session = Get-PSSession
 $Emails = Get-Content C:\Users\borda01\NewTerms.csv
-$Mailto "Person's Name<Person@Company.com"
-$Mailfrom "Person's Name<Person@Company.com"
-$SubjectMessage "Subject of e-mail"
-$BodyMessage "Body of e-mail"
-$SMTPServer smtpserver.company.com
+$Mailto = "Person's Name<Person@Company.com"
+$Mailfrom = "Person's Name<Person@Company.com"
+$SubjectMessage = "Subject of e-mail"
+$BodyMessage = "Body of e-mail"
+$SMTPServer = "smtpserver.company.com"
+$O365License = "Type of office 365 License"
 If (-Not($Session.ComputerName -eq "outlook.office365.com" -and $Session.State -eq "Opened")) # Tests for already existing powershell session to Microsoft on-line (MSOL)
 	{
 	$UserCredential = Get-Credential
@@ -24,7 +25,7 @@ ForEach ($Email in $Emails) #Loops through CSV and determines size of each mailb
 		If ($intMailboxsize -lt $MaxSize) #If the mailbox is less than 10GB it will convert it to a shared mailbox and unlicense the account
 			{	
 			Set-Mailbox $Email -Type Shared -ProhibitSendReceiveQuota 10GB -ProhibitSendQuota 9.75GB -IssueWarningQuota 9.5GB
-			Set-MSOLUserLicense -UserPrincipalName $Email -RemoveLicenses pvsw:ENTERPRISEWITHSCAL
+			Set-MSOLUserLicense -UserPrincipalName $Email -RemoveLicenses $O365License
 			}
 		Else #If the mailbox is too large, it will send an e-mail to IT customer service announcing the the mailbox is too large to convert.
 			{
