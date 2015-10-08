@@ -34,4 +34,4 @@ ForEach ($Email in $Emails) #Loops through CSV and determines size of each mailb
 			}
 		}
 	}
-Get-PSSession | Remove-PSSession1
+Get-PSSession | Remove-PSSession
